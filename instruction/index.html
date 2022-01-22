@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <style ></style>
+    <style type="text/css">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+		}
+        h1 {
+            font-size: 22px;
+        }
+        p {
+            line-height: 1.5;
+            font-size: 15px;
+        }
+        code {
+            background-color: #FAFAFA;
+            color: black;
+            border: 1px solid #ddd;
+            border-radius: 3pt;
+            font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'DejaVu Sans Mono', Menlo, Consolas, monospace;
+            padding-left: 2pt;
+            padding-right: 2pt;
+        }
+        #navbar {
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.85);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+            height: 49px;
+        }
+        #back-btn {
+            background-color: transparent;
+            border: none;
+            color: #0A7AFF;
+            display: flex;
+            justify-content: space-between;
+            margin-left: 3px;
+            margin-top: 10px;
+        }
+        #back-btn:disabled {
+            opacity: 0.25;
+            filter: grayscale(100%);
+        }
+        #back-image {
+            user-select: none;
+        }
+        #back-text {
+            font-size: 16px;
+            user-select: none;
+            margin-left: 20px;
+            position: absolute;
+            top: 47%;
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+        #image {
+            margin-top: 49px;
+            width: 100%;
+            aspect-ratio: 1284/1053;
+            background: gray;
+        }
+        #content {
+            margin-top: 5%;
+            margin-left: 5%;
+            margin-right: 5%;
+            margin-bottom: 99px;
+        }
+        #content-information {
+            font-style: italic;
+        }
+        #footer {
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.75);
+            -webkit-backdrop-filter: saturate(180%) blur(7px);
+            backdrop-filter: saturate(180%) blur(20px);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 1;
+            height: 99px;
+        }
+        #continue-btn {
+            user-select: none;
+            font-weight: semibold;
+            font-size: 17px;
+            background-color: #0A7AFF;
+            color: white;
+            border: none;
+            margin-left: 5%;
+            margin-right: 5%;
+            margin-top: 24px;
+            width: 90%;
+            padding: 11.5pt;
+            border-radius: 8pt;
+        }
+        @media (max-width: 360px) {
+            .shrinkable {
+                font-size: 13px;
+            }
+        }
+        @media (min-width: 429px), screen and (orientation:landscape) {
+            #card {
+                height: 100%;
+                max-width: 429px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            #image {
+                border-radius: 4px;
+            }
+            #continue-btn {
+                max-width: 429px;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+		@media (prefers-color-scheme: dark) {
+			body {
+				background-color: rgb(30, 30, 30);
+				color: white;
+			}
+            code {
+                background-color: black;
+                color: white;
+                border: 1px solid rgb(82, 82, 82);
+            }
+            #continue-btn {
+                background-color: rgb(10, 132, 225);
+            }
+            #navbar {
+                background-color: rgba(30, 30, 30, 0.3);
+            }
+            #footer {
+                background-color: rgba(30, 30, 30, 0.3);
+            }
+		}
+	</style>
+	<title>Modify Security Policy</title>
+</head>
+<body>
+    <script>
+        let steps_per_arch = {
+            "as-raising": ["step1-common", "step2-as", "step3-common", "step4-as-raising", "step5-as-raising", "step6-as-raising", "step7-as-raising"],
+            "as-lowering": ["step1-common", "step2-as", "step3-common", "step4-common", "step5-as-lowering", "step6-as-lowering", "step7-as-lowering"],
+            "intel-raising": ["step1-common", "step2-intel", "step3-common", "step4-common", "step5-intel-raising", "step6-intel-raising", "step7-intel-raising"],
+            "intel-lowering": ["step1-common", "step2-intel", "step3-common", "step4-common", "step5-intel-lowering", "step6-intel-lowering", "step7-intel-lowering"],
+        }
+
+        var dict = {
+            "step1-common": {
+                title: "Shut down your Mac", 
+                text: "On your Mac, choose Apple menu  > Shut Down. Wait for your Mac to shut down completely.",
+            },
+            "step2-as": {
+                title: "Show startup options", 
+                text: "Press and hold the power button until you see the startup options window. Select Options, then click Continue.",
+                information: "On a Mac notebook, the Touch ID button is the power button. On Mac mini, the connected display may be black for up to 30 seconds as you hold the power button.",
+            },
+            "step2-intel": {
+                title: "Start up from macOS Recovery", 
+                text: "Press the power button to turn on your Mac. Release the power button and immediately press and hold these two keys: Command (⌘) and R. Release the keys when you see an Apple logo or spinning globe.",
+                information: "On a Mac notebook, the Touch ID button is the power button.",
+            },
+            "step3-common": {
+                title: "Select a user", 
+                text: "If you’re asked to select a user you know the password for, select your user, click Next, then enter your administrator password.",
+            },
+            "step4-as-raising": {
+                title: "Open Startup Security Utility", 
+                text: "When you see the utilities window, choose Utilities > Startup Security Utility from the menu bar.",
+            },
+            "step4-common": {
+                title: "Show startup options", 
+                text: "When you see the utilities window, choose Utilities > Terminal from the menu bar.",
+            },
+            "step5-as-lowering": {
+                title: "Disable System Integrity Protection", 
+                text: "Type <code>csrutil disable</code> and press Return. If asked to allow booting unsigned systems, press <code>y</code> , then press Return to confirm. Enter your admin password, and press Return again.",
+                information: "You will not see your password as you type. This step takes up to two minutes. Wait until you see “System Integrity Protection is off” before continuing. Do <b>not</b> restart your Mac yet.",
+            },
+            "step5-as-raising": {
+                title: "Change Security Policy", 
+                text: "Select Macintosh HD, then click Security Policy.",
+            },
+            "step5-intel-lowering": {
+                title: "Disable System Integrity Protection", 
+                text: "Type <code>csrutil disable</code> and press Return.",
+            },
+            "step5-intel-raising": {
+                title: "Enable System Integrity Protection", 
+                text: "Type <code>csrutil enable</code> and press Return.",
+            },
+            "step6-as-lowering": {
+                title: "Allow non-sealed system snapshots", 
+                text: "Type the following and press return:<br><code class='shrinkable'>csrutil authenticated-root disable</code><br>Enter your admin password, then press Return again.",
+                information: "You will not see your password as you type. This step takes up to two minutes. Wait until you see “Successfully disabled authenticated root requirement” before continuing.",
+            },
+            "step6-as-raising": {
+                title: "Choose Security Policy", 
+                text: "Choose Full Security, click OK, then enter your admin password if prompted.",
+                information: "This step takes up to five minutes. If you need to use kernel extensions or audio apps from Rogue Amoeba, choose Reduced Security and check “Allow user management of kernel extensions from identified developers”. If your Mac is offline, choose Reduced Security.",
+            },
+            "step6-intel-lowering": {
+                title: "Allow non-sealed system snapshots", 
+                text: "Type the following and press return:<br><code class='shrinkable'>csrutil authenticated-root disable</code><br>",
+            },
+            "step6-intel-raising": {
+                title: "Only allow sealed system snapshots", 
+                text: "Type the following and press return:<br><code class='shrinkable'>csrutil authenticated-root disable</code><br>",
+            },
+            "step7-as-raising": {
+                title: "Restart your Mac", 
+                text: "Choose Apple menu  > Restart.",
+            },
+            "step7-as-lowering": {
+                title: "Restart your Mac", 
+                text: "Choose Apple menu  > Restart. After your Mac starts up, reopen Recording Indicator Utility, then click the blue toggle or “Per-App Settings” to customize the recording indicator light.",
+            },
+            "step7-intel-lowering": {
+                title: "Restart your Mac", 
+                text: "Choose Apple menu  > Restart. After your Mac starts up, reopen Recording Indicator Utility, then click the blue toggle or “Per-App Settings” to customize the recording indicator light.",
+            },
+            "step7-intel-raising": {
+                title: "Restart your Mac", 
+                text: "Choose Apple menu  > Restart.",
+            },
+        };
+
+        var currentStep = 0;
+        var arch = "as-lowering";
+
+        function backClicked() {
+            if (currentStep <= 0) {
+                return;
+            }
+            currentStep--;
+            updateDescription();
+        }
+
+        function continueClicked() {
+            let steps = steps_per_arch[arch];
+            if (currentStep >= steps.length - 1) {
+                var retVal = confirm("Would you like to close this tutorial?"); 
+                if (retVal == true) {
+                    window.close();
+                }
+                return;
+            }
+            currentStep++;
+            updateDescription();
+        }
+
+        function updateDescription() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const archParam = urlParams.get('arch');
+            if (steps_per_arch[archParam]) {
+                arch = archParam;
+            }
+            var title = arch.includes("raising") ? "Raising security settings " : "Lowering security settings ";
+            title += arch.includes("intel") ? "on an Intel-based Mac" : "on Mac computers with Apple Silicon";
+            document.title = title;
+            let steps = steps_per_arch[arch];
+            let stepIdentifier = steps[currentStep];
+            let description = dict[stepIdentifier];
+            document.getElementById("image").src = "images/" + stepIdentifier + ".png"
+            document.getElementById("content-title").innerText = description["title"];
+            document.getElementById("content-text").innerHTML = description["text"];
+            let additionalInformation = description["information"];
+            document.getElementById("content-information").innerHTML = additionalInformation ? additionalInformation : "";
+            document.getElementById("continue-btn").innerText = (currentStep < steps.length - 1) ? "Continue" : "Done";
+            let backButton = document.getElementById("back-btn");
+            let enablesBackButton = currentStep > 0;
+            document.getElementById("back-text").innerText = enablesBackButton ? "Back" : "";
+            backButton.disabled = !enablesBackButton;
+            document.getElementById("back-btn").style.marginTop = navigator.maxTouchPoints > 0 ? "10px" : "8px";
+            window.scrollTo(0, 0);
+        }
+
+        window.onload = updateDescription;
+    </script>
+    <div id="navbar">
+        <button id="back-btn" onclick="backClicked()" disabled>
+            <img id="back-image" src="images/back-button.png" width=17px height=26px>
+            <div id="back-text"></div>
+        </button>
+    </div>    
+    <div id="card">
+        <img src="" id="image">
+        <div id="content">
+            <h1 id="content-title">You need to enable JavaScript to view this page.</h1>
+            <p id="content-text"></p>
+            <p id="content-information"></p>
+        </div>
+    </div>
+    <div id="footer">
+        <button id="continue-btn" onclick="continueClicked()">Continue</button>
+    </div>
+</body>
+</html>
