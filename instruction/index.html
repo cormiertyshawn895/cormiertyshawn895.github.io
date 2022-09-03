@@ -155,6 +155,11 @@
             "as-lowering": ["step1-common", "step2-as", "step3-common", "step4-common", "step5-as-lowering", "step6-as-lowering", "step7-as-lowering"],
             "intel-raising": ["step1-common", "step2-intel", "step3-common", "step4-common", "step5-intel-raising", "step6-intel-raising", "step7-intel-raising"],
             "intel-lowering": ["step1-common", "step2-intel", "step3-common", "step4-common", "step5-intel-lowering", "step6-intel-lowering", "step7-intel-lowering"],
+            "sip-itunes-as-lowering": ["step1-common", "step2-as", "step3-common", "step4-common", "step5-sip-as-lowering", "step7-sip-itunes-as-lowering"],
+            "sip-as-lowering": ["step1-common", "step2-as", "step3-common", "step4-common", "step5-sip-as-lowering", "step7-sip-as-lowering"],
+            "sip-as-raising": ["step1-common", "step2-as", "step3-common", "step4-as-raising", "step5-as-raising", "step6-as-raising", "step7-as-raising"],
+            "sip-intel-raising": ["step1-common", "step2-intel", "step3-common", "step4-common", "step5-sip-intel-raising", "step7-sip-intel-raising"],
+            "sip-intel-lowering": ["step1-common", "step2-intel", "step3-common", "step4-common", "step5-sip-intel-lowering", "step7-sip-intel-lowering"],
         }
 
         var dict = {
@@ -189,6 +194,11 @@
                 text: "Type <code>csrutil disable</code> and press Return. If asked to allow booting unsigned systems, press <code>y</code> , then press Return to confirm. Enter your admin password, and press Return again.",
                 information: "You will not see your password as you type. This step takes up to two minutes. Wait until you see “System Integrity Protection is off” before continuing. Do <b>not</b> restart your Mac yet.",
             },
+            "step5-sip-as-lowering": {
+                title: "Disable System Integrity Protection", 
+                text: "Type <code>csrutil disable</code> and press Return. If asked to allow booting unsigned systems, press <code>y</code> , then press Return to confirm. Enter your admin password, and press Return again.",
+                information: "You will not see your password as you type. This step takes up to two minutes. Wait until you see “System Integrity Protection is off” before continuing.",
+            },
             "step5-as-raising": {
                 title: "Change Security Policy", 
                 text: "Select Macintosh HD, then click Security Policy.",
@@ -196,8 +206,18 @@
             "step5-intel-lowering": {
                 title: "Disable System Integrity Protection", 
                 text: "Type <code>csrutil disable</code> and press Return.",
+                information: "Do <b>not</b> restart your Mac yet.",
+            },
+            "step5-sip-intel-lowering": {
+                title: "Disable System Integrity Protection", 
+                text: "Type <code>csrutil disable</code> and press Return.",
             },
             "step5-intel-raising": {
+                title: "Enable System Integrity Protection", 
+                text: "Type <code>csrutil enable</code> and press Return.",
+                information: "Do <b>not</b> restart your Mac yet.",
+            },
+            "step5-sip-intel-raising": {
                 title: "Enable System Integrity Protection", 
                 text: "Type <code>csrutil enable</code> and press Return.",
             },
@@ -232,6 +252,22 @@
                 text: "Choose Apple menu  > Restart. After your Mac starts up, reopen Recording Indicator Utility, then click the blue toggle or “Per-App Settings” to customize the recording indicator light.",
             },
             "step7-intel-raising": {
+                title: "Restart your Mac", 
+                text: "Choose Apple menu  > Restart.",
+            },
+            "step7-sip-as-lowering": {
+                title: "Restart your Mac", 
+                text: "Choose Apple menu  > Restart.",
+            },
+            "step7-sip-itunes-as-lowering": {
+                title: "Restart your Mac", 
+                text: "Choose Apple menu  > Restart. After your Mac starts up, open Retroactive and choose to install iTunes again.",
+            },
+            "step7-sip-intel-lowering": {
+                title: "Restart your Mac", 
+                text: "Choose Apple menu  > Restart.",
+            },
+            "step7-sip-intel-raising": {
                 title: "Restart your Mac", 
                 text: "Choose Apple menu  > Restart.",
             },
