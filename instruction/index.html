@@ -157,6 +157,7 @@
             "intel-lowering": ["step1-common", "step2-intel", "step3-common", "step4-common", "step5-intel-lowering", "step6-intel-lowering", "step7-intel-lowering"],
             "sip-itunes-as-lowering": ["step1-common", "step2-as", "step3-common", "step4-common", "step5-sip-as-lowering", "step7-sip-itunes-as-lowering"],
             "sip-as-lowering": ["step1-common", "step2-as", "step3-common", "step4-common", "step5-sip-as-lowering", "step7-sip-as-lowering"],
+            "sip-as-vm-lowering": ["step1-common", "step2-as-vm", "step3-common", "step4-common", "step5-sip-as-lowering", "step7-sip-as-lowering"],
             "sip-as-raising": ["step1-common", "step2-as", "step3-common", "step4-as-raising", "step5-as-raising", "step6-as-raising", "step7-as-raising"],
             "sip-intel-raising": ["step1-common", "step2-intel", "step3-common", "step4-common", "step5-sip-intel-raising", "step7-sip-intel-raising"],
             "sip-intel-lowering": ["step1-common", "step2-intel", "step3-common", "step4-common", "step5-sip-intel-lowering", "step7-sip-intel-lowering"],
@@ -172,7 +173,12 @@
             "step2-as": {
                 title: "Show startup options", 
                 text: "Press and hold the power button until you see the startup options window. Select Options, then click Continue.",
-                information: "On a Mac notebook, the Touch ID button is the power button. On Mac mini or Mac Studio, the connected display may be black for up to 30 seconds as you hold the power button.",
+                information: "On a Mac notebook, the Touch ID button is the power button. On Mac mini, Mac Studio, and Mac Pro, the connected display may be black for up to 30 seconds as you hold the power button.",
+            },
+            "step2-as-vm": {
+                title: "Start up from macOS Recovery", 
+                text: "<p>For UTM, right-click the virtual machine name in the sidebar, then click Run Recovery.</p><p>For VirtualBuddy, open the virtual machine from the gallery, turn on “Boot in recovery mode”, and click Run.</p><p>For Parallels Desktop, right-click the Parallels Desktop icon in the Dock > Control Center. Then right-click the virtual machine name > Start in Recovery mode.</p>",
+                information: "When you see the startup options window, select Options, then click Continue.",
             },
             "step2-intel": {
                 title: "Start up from macOS Recovery", 
@@ -307,6 +313,14 @@
             updateDescription();
         }
 
+        function descriptionForVM(description, isVM) {
+            if (isVM) {
+                return description.replace("your Mac", "your virtual Mac").replace("your Mac", "your virtual Mac");
+            } else {
+                return description;
+            }
+        }
+
         function updateDescription() {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
@@ -314,17 +328,21 @@
             if (steps_per_arch[archParam]) {
                 arch = archParam;
             }
+            var isVM = arch.includes("vm");
             var title = arch.includes("raising") ? "Raising security settings " : "Lowering security settings ";
             title += arch.includes("intel") ? "on an Intel-based Mac" : "on Mac computers with Apple Silicon";
+            if (isVM) {
+                title = title.replace("Mac computers", "Mac virtual machine");
+            }
             document.title = title;
             let steps = steps_per_arch[arch];
             let stepIdentifier = steps[currentStep];
             let description = dict[stepIdentifier];
             document.getElementById("image").src = "images/" + stepIdentifier + ".png"
-            document.getElementById("content-title").innerText = description["title"];
-            document.getElementById("content-text").innerHTML = description["text"];
+            document.getElementById("content-title").innerText = descriptionForVM(description["title"], isVM);
+            document.getElementById("content-text").innerHTML = descriptionForVM(description["text"], isVM);
             let additionalInformation = description["information"];
-            document.getElementById("content-information").innerHTML = additionalInformation ? additionalInformation : "";
+            document.getElementById("content-information").innerHTML = descriptionForVM((additionalInformation ? additionalInformation : ""), isVM);
             document.getElementById("continue-btn").innerText = (currentStep < steps.length - 1) ? "Continue" : "Done";
             let backButton = document.getElementById("back-btn");
             let enablesBackButton = currentStep > 0;
